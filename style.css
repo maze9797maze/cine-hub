@@ -1,0 +1,415 @@
+/* ===== CineHub 样式表 ===== */
+
+/* 全局样式：去掉浏览器默认边距，设置深色背景和白色文字 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* 让宽高计算包含内边距和边框，布局更直观 */
+}
+
+body {
+  background: #141414; /* 深色背景，类似影院氛围 */
+  color: #fff;          /* 白色文字 */
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  min-height: 100vh;    /* 至少占满整个屏幕高度 */
+}
+
+/* ===== 顶部标题栏 ===== */
+.header {
+  padding: 24px 32px;
+  display: flex;                 /* 弹性布局，让标题和搜索框排在一行 */
+  align-items: center;           /* 垂直方向居中对齐 */
+  justify-content: space-between;/* 标题靠左、搜索框靠右 */
+  flex-wrap: wrap;               /* 屏幕太窄时自动换行 */
+  gap: 16px;                     /* 两个元素之间的间距 */
+}
+
+.header__title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* 搜索框样式 */
+.header__search {
+  padding: 10px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;            /* 圆角 */
+  background: #2a2a2a;           /* 比背景略浅的输入框 */
+  color: #fff;
+  outline: none;                 /* 去掉聚焦时的蓝色边框 */
+  width: 240px;
+}
+
+/* 搜索框获得焦点时，加一圈高亮边 */
+.header__search:focus {
+  box-shadow: 0 0 0 2px #e50914; /* Netflix 风格红色描边 */
+}
+
+/* ===== 电影卡片网格 ===== */
+.grid {
+  display: grid;                 /* 使用网格布局 */
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  /* 解释：自动填充列，每列最小 180px，窗口变宽会自动增加列数 */
+  gap: 20px;                     /* 卡片之间的间距 */
+  padding: 32px;
+}
+
+/* 单张电影卡片 */
+.card {
+  background: #1f1f1f;
+  border-radius: 12px;
+  overflow: hidden;              /* 圆角裁切掉图片溢出部分 */
+  cursor: pointer;               /* 鼠标悬停时变成小手 */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* 动画过渡 */
+}
+
+/* 鼠标悬停时：卡片放大 + 阴影加深，制造「浮起来」的效果 */
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* 电影海报图片 */
+.card img {
+  width: 100%;
+  aspect-ratio: 2 / 3;           /* 固定宽高比 2:3，符合海报比例 */
+  object-fit: cover;             /* 图片裁剪填充，不变形 */
+  display: block;
+}
+
+/* 卡片下方的文字信息区 */
+.card__info {
+  padding: 12px;
+}
+
+.card__title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.card__rating {
+  font-size: 14px;
+  color: #ffd700;                /* 金色，表示评分 */
+}
+
+.card__director {
+  font-size: 12px;
+  color: #999999;                    /* 灰色，表示导演信息 */
+}
+
+/* ===== 状态提示（加载中 / 无结果 / 出错）===== */
+.status {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 18px;
+}
+
+/* 出错时把文字变红 */
+.status.error {
+  color: #ff5555;
+}
+
+/* ===== 「加载更多」按钮 ===== */
+.load-more {
+  display: block;               /* 变成块级元素，占一行，方便水平居中 */
+  margin: 0 auto 40px;          /* 上下 0、左右自动 → 水平居中 */
+  padding: 12px 40px;
+  font-size: 16px;
+  background: #e50914;          /* Netflix 红 */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* 按钮被禁用时（正在加载 / 没更多了）变灰 */
+.load-more:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+/* ===== 详情弹窗 ===== */
+/* .modal 是盖住整个屏幕的一层半透明黑背景（遮罩层） */
+.modal {
+  position: fixed;              /* 固定定位：无论怎么滚动都盖在屏幕上 */
+  inset: 0;                     /* 上右下左全为 0，铺满全屏 */
+  background: rgba(0, 0, 0, 0.8); /* 半透明黑 */
+  display: flex;
+  align-items: center;          /* 让弹窗内容垂直居中 */
+  justify-content: center;      /* 水平居中 */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease; /* 淡入淡出动画 */
+  z-index: 1000;
+}
+
+/* 加上 .show 类就显示出来 */
+.modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 弹窗的深色内容盒子 */
+.modal__box {
+  position: relative;           /* 让右上角的关闭按钮能相对它定位 */
+  background: #181818;
+  color: #fff;
+  width: 90%;
+  max-width: 650px;
+  max-height: 85vh;             /* 最高占屏幕 85%，内容太长就滚 */
+  overflow-y: auto;             /* 纵向可滚动 */
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* 右上角关闭按钮 */
+.modal__close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;                  /* 盖在剧照大图上面 */
+}
+
+/* 顶部剧照大图（横向 banner） */
+.modal__banner {
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+}
+
+/* 文字内容区 */
+.modal__content {
+  padding: 24px;
+}
+
+.modal__title {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+/* 标题旁边的年份 */
+.modal__year {
+  color: #999;
+  font-size: 18px;
+  font-weight: normal;
+}
+
+/* 分类标签列表 */
+.modal__genres {
+  margin: 8px 0;
+}
+
+.genre-tag {
+  display: inline-block;
+  background: #333;
+  color: #aaa;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  margin-right: 6px;
+  margin-top: 4px;
+}
+
+.modal__rating {
+  color: #ffd700;
+  margin: 8px 0;
+}
+
+/* 导演等元信息 */
+.modal__meta {
+  color: #aaa;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+/* 详情里的每一个小分块（简介 / 主演） */
+.modal__section {
+  margin-top: 18px;
+}
+
+.modal__section h4 {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.modal__text {
+  line-height: 1.6;
+  font-size: 14px;
+  color: #ddd;
+}
+
+/* ===== 搜索表单 ===== */
+.header__form {
+  display: flex;               /* 输入框和按钮排成一行 */
+  gap: 8px;
+}
+
+.header__search-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #e50914;         /* Netflix 红 */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.header__search-btn:hover {
+  background: #c00712;         /* 悬停时略深 */
+}
+
+/* ===== 卡片海报容器 + 类型标签 ===== */
+.card__poster {
+  position: relative;          /* 让标签能相对海报定位 */
+}
+
+/* 「🎬 电影 / 📺 剧集」小标签，贴在海报右上角 */
+.card__badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* ===== 导航标签页 ===== */
+.nav-tabs {
+  display: flex;
+  gap: 12px;
+}
+
+.tab-btn {
+  background: transparent;
+  border: 1px solid #444;
+  color: #ccc;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  border-color: #e50914;
+  color: #fff;
+}
+
+/* 当前激活的标签页：红底白字 */
+.tab-btn.active {
+  background: #e50914;
+  border-color: #e50914;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* ===== 收藏按钮 ===== */
+/* 贴在海报右下角，和右上角的类型标签对角呼应 */
+.fav-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.fav-btn:hover {
+  transform: scale(1.05);
+  background: rgba(0, 0, 0, 0.9);
+}
+
+/* 已收藏状态：红底 */
+.fav-btn.active {
+  background: #e50914;
+  border-color: #e50914;
+}
+
+/* ===== 统计仪表盘（Day 6）===== */
+/* 整个仪表盘是一个网格容器：自动填充卡片，每列最小 200px */
+.dashboard-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 0 32px;           /* 左右留白，和下方海报网格对齐 */
+  margin-bottom: 24px;
+}
+
+/* 默认隐藏：切到「热门推荐」时不显示仪表盘 */
+.dashboard-container.hidden {
+  display: none;
+}
+
+/* 单个统计卡片 */
+.stat-card {
+  background: #1f1f1f;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #333;
+  text-align: center;
+}
+
+.stat-card h4 {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+/* 卡片里的数字（总数 / 平均分）用大号红字突出显示 */
+.stat-card p {
+  font-size: 28px;
+  font-weight: bold;
+  color: #e50914;
+}
+
+/* 环形图那张卡片占两列宽度，让图有更多空间 */
+.chart-card {
+  grid-column: span 2;
+}
+
+/* 手机等窄屏上，图表卡片恢复占一列 */
+@media (max-width: 600px) {
+  .chart-card {
+    grid-column: span 1;
+  }
+}
+
+/* 图表外层的固定高度盒子。
+   Chart.js 需要父容器有一个确定的高度，图才能撑开（配合 maintainAspectRatio: false）。 */
+.chart-wrapper {
+  height: 180px;
+  position: relative;
+}
+
+/* 图表为空时的提示文字，居中盖在图表区域上方 */
+.chart-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);   /* 先各移动 50%，再回退自身一半，实现完美居中 */
+  color: #888;
+  font-size: 14px;
+}
+
+.chart-empty.hidden {
+  display: none;
+}
