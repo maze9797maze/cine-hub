@@ -1,51 +1,58 @@
-# 🎬 CineHub 追剧看板
+# 🎬 CineHub - 个人影视追剧看板与流派统计 Dashboard
 
-一个基于 **TMDB API** 的影视追剧看板，纯静态网站（HTML + CSS + JavaScript），无框架、无构建工具。支持搜索、收藏、详情查看，并用 Chart.js 把追剧偏好可视化。
+> 一个基于原生 JavaScript 和 TMDB API 构建的暗黑风格追剧看板，支持影视搜索、收藏持久化存储以及个性化追剧流派数据可视化分析。
 
-## ✨ 功能特性
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow.svg)
+![Status](https://img.shields.io/badge/status-Active-success.svg)
 
-- 🔥 **热门推荐** — 拉取 TMDB 热门电影，支持「加载更多」分页
-- 🔍 **搜索** — 按关键词搜索电影与剧集（`search/multi`）
-- ❤️ **追剧清单** — 收藏 / 取消收藏，`localStorage` 本地持久化
-- 📊 **统计仪表盘** — Chart.js 环形图展示收藏的**流派占比**（TOP 5）、总追剧数、平均评分
-- 🎞️ **详情弹窗** — 剧照大图、分类标签、导演、主演、剧情简介
+🌐 **在线预览网址**：[https://maze9797maze.github.io/cine-hub/](https://maze9797maze.github.io/cine-hub/)
 
-## 🛠️ 技术栈
+---
 
-- 原生 JavaScript（`fetch` + `async/await`）
-- TMDB API（热门 / 搜索 / 详情，`append_to_response=credits` 合并请求）
-- Chart.js（CDN 引入，Doughnut 环形图）
-- localStorage（追剧清单持久化）
+## ✨ 核心功能特性
 
-## 🚀 在线体验
+- 🎬 **热门推介与全局搜索**：接入 TMDB 官方 API，实时渲染最新热门电影/剧集，支持关键词检索。
+- 📖 **剧集详情弹窗 (Modal)**：点击海报卡片唤起模态框，展示海报大图、剧照、剧情简介、上映年份及主要主演名单。
+- ❤️ **追剧清单 (LocalStorage)**：支持一键收藏/取消收藏剧集，利用浏览器 `localStorage` 实现前端数据持久化存储。
+- 📊 **流派数据可视化 (Chart.js)**：根据已收藏的剧集流派，自动清洗并统计生成 TOP 5 偏好流派环形图（如：科幻/悬疑/喜剧）。
+- 📱 **响应式暗黑 UI**：基于 CSS Grid 与 Flexbox 布局，自适应 PC 端与移动端显示，支持点击遮罩 / 关闭按钮 / 键盘 `Esc` 快捷关闭。
 
-👉 [https://maze9797maze.github.io/cine-hub/](https://maze9797maze.github.io/cine-hub/)
+---
 
-## 🏃 本地运行
+## 🛠️ 技术栈与工具
 
-纯静态项目，直接双击 `index.html` 即可在浏览器打开；也可以用任意静态服务器：
+| 模块 | 技术选型 | 说明 |
+| :--- | :--- | :--- |
+| **前端基础** | HTML5 / CSS3 / ES6+ JavaScript | 原生 Vanilla JS，无第三方前端框架依赖 |
+| **数据来源** | TMDB RESTful API | 异步 API 数据获取 (`Fetch API` + `Async/Await`) |
+| **本地存储** | Web Storage API (`localStorage`) | 纯前端用户数据持久化 |
+| **图表展示** | Chart.js | 数据提取、清洗与可视化渲染 |
+| **构建部署** | Git / GitHub Pages | 版本管理 + 公网静态托管 |
 
-```bash
-python3 -m http.server 8000   # 然后访问 http://localhost:8000
-```
+---
 
-## 📁 项目结构
+## 🚀 本地开发指引
 
-```
-CineHub/
-├── index.html   # 页面结构
-├── style.css    # 样式
-└── script.js    # 交互逻辑 + TMDB 数据请求
-```
+1. **克隆仓库**
+   ```bash
+   git clone https://github.com/maze9797maze/cine-hub.git
+   cd cine-hub
+   ```
 
-## 🔑 TMDB API Key
+2. **配置 API Key**
+   在 `script.js` 中填入你的 [TMDB API Key](https://www.themoviedb.org/settings/api)：
+   ```javascript
+   const API_KEY = 'YOUR_TMDB_API_KEY';
+   ```
 
-`script.js` 顶部内置了一个免费的 TMDB v3 API Key。若需自己长期使用，请到 [TMDB](https://www.themoviedb.org/) 免费申请，替换 `API_KEY` 常量即可。
+3. **运行项目**
+   直接双击打开 `index.html` 或使用 VS Code 的 `Live Server` 扩展启动。
 
-## 📚 主要技术点
+---
 
-- `fetch` / `async/await` 请求第三方 API 与错误处理
-- `append_to_response=credits` 一次请求拿详情 + 演职员
-- 数组高阶函数：`forEach` / `map` / `filter` / `reduce` / `sort` / `slice`
-- 状态驱动 UI + `localStorage` 持久化
-- Chart.js 环形图（动态销毁 / 重建实例）
+## 💡 技术收获与反思
+
+1. 掌握了异步 JavaScript 开发流程，理解了 `Promise`、`async/await` 在实际 API 数据请求与异常捕获（`try/catch`）中的应用。
+2. 实践了纯前端的数据流控制与组件解耦逻辑（从数据获取 -> `localStorage` 保存 -> 图表数据结构转换与重构）。
+3. 深入应用了 CSS Grid 响应式布局以及 CSS 定位/层级（`position: fixed`, `z-index`）控制模态框与防冒泡设计。
