@@ -1,76 +1,14 @@
-<!DOCTYPE html>
-<!-- 声明文档类型为 HTML5 -->
-<html lang="zh-CN">
-<head>
-  <!-- 设置网页字符编码，确保中文正常显示 -->
-  <meta charset="UTF-8">
-  <!-- 让网页在手机等移动设备上也能自适应宽度 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- 网页标签栏显示的标题 -->
-  <title>🎬 CineHub 追剧看板</title>
-  <!-- 引入外部样式表，负责网页外观 -->
-  <link rel="stylesheet" href="style.css">
-  <!-- 引入 Chart.js 图表库（通过 CDN 加载），用于绘制追剧统计仪表盘的环形图 -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-
-  <!-- 顶部标题栏区域 -->
-  <header class="header">
-    <!-- 大标题 -->
-    <h1 class="header__title">🎬 CineHub 追剧看板</h1>
-    <!-- 导航标签页：切换「热门推荐」和「我的追剧清单」 -->
-    <nav class="nav-tabs">
-      <button id="tab-popular" class="tab-btn active">🔥 热门推荐</button>
-      <button id="tab-watchlist" class="tab-btn">❤️ 我的追剧清单 (<span id="watchlist-count">0</span>)</button>
-    </nav>
-    <!-- 搜索表单：回车或点「搜索」按钮都会触发 submit 事件 -->
-    <form id="search-form" class="header__form">
-      <input type="text" id="search" class="header__search" placeholder="搜索电影 / 剧集…">
-      <button type="submit" class="header__search-btn">搜索</button>
-    </form>
-  </header>
-
-  <!-- 统计仪表盘区域（默认隐藏，切换到「我的追剧清单」标签时才显示） -->
-  <section id="dashboard-section" class="dashboard-container hidden">
-    <!-- 统计卡片 1：追剧总数 -->
-    <div class="stat-card">
-      <h4>📺 追剧总数</h4>
-      <p id="stat-total-count">0</p>
-    </div>
-    <!-- 统计卡片 2：平均评分 -->
-    <div class="stat-card">
-      <h4>⭐ 平均评分</h4>
-      <p id="stat-avg-rating">0.0</p>
-    </div>
-    <!-- 统计卡片 3：流派占比环形图（占两列宽度） -->
-    <div class="stat-card chart-card">
-      <h4>📊 影视流派占比</h4>
-      <div class="chart-wrapper">
-        <canvas id="genre-chart"></canvas>
-        <!-- 没有可统计的数据时，显示这行提示，盖在图表位置上 -->
-        <p id="chart-empty" class="chart-empty hidden">暂无数据</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 主内容区：电影卡片会由 JavaScript 动态填到这里 -->
-  <main id="movie-grid" class="grid"></main>
-
-  <!-- 「加载更多」按钮：点击加载下一页电影 -->
-  <button id="load-more" class="load-more">加载更多</button>
-
-  <!-- 详情弹窗：默认隐藏，点击某张卡片时弹出，内容由 JS 动态填充 -->
-  <div id="modal" class="modal">
-    <div class="modal__box">
-      <!-- 右上角关闭按钮 -->
-      <button id="modal-close" class="modal__close">✕</button>
-      <!-- 详情内容（剧照大图、简介、分类、主演等）由 JavaScript 填充到这里 -->
-      <div id="modal-body"></div>
-    </div>
-  </div>
-
-  <!-- 引入外部脚本，负责网页交互逻辑 -->
-  <script src="script.js"></script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/cine-hub/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cinehub-react</title>
+    <script type="module" crossorigin src="/cine-hub/assets/index-DU-gKbmO.js"></script>
+    <link rel="stylesheet" crossorigin href="/cine-hub/assets/index-Cg0exJuk.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
