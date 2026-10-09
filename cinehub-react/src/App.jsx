@@ -3,6 +3,7 @@ import Header from './components/Header';
 import MovieCard from './components/MovieCard';
 import MovieModal from './components/MovieModal';
 import GenreChart from './components/GenreChart';
+import SkeletonGrid from './components/SkeletonGrid';
 import { fetchPopular, searchMovies } from './api';
 import { useLocalStorage } from './hooks/useLocalStorage';
 
@@ -64,6 +65,16 @@ export default function App() {
     }
   };
 
+  // 重试：报错时点「重新加载」触发。
+  // 根据当前有没有搜索词决定重新请求什么：有搜索词→重新搜索，否则→重新拉热门
+  const handleRetry = () => {
+    if (searchQuery.trim()) {
+      handleSearch();
+    } else {
+      loadPopularMovies();
+    }
+  };
+
   // 收藏切换：点卡片上的收藏按钮时触发
   const handleToggleWatchlist = (movie) => {
     const exists = watchlist.some((item) => item.id === movie.id);
@@ -118,9 +129,19 @@ export default function App() {
 
         {/* 三种状态：加载中 / 出错 / 无数据，最后才是列表 */}
         {loading ? (
-          <p className="text-center text-gray-400 py-20">⏳ 加载中...</p>
+          <SkeletonGrid count={10} />
         ) : error ? (
-          <p className="text-center text-red-500 py-20">{error}</p>
+          <div className="bg-gray-900 border border-red-900/30 rounded-2xl p-8 text-center max-w-md mx-auto my-12 space-y-4">
+            <div className="text-4xl">⚠️</div>
+            <h3 className="text-lg font-bold text-white">加载失败</h3>
+            <p className="text-xs text-gray-400">{error}</p>
+            <button
+              onClick={handleRetry}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold transition-colors"
+            >
+              🔄 重新加载
+            </button>
+          </div>
         ) : displayedMovies.length === 0 ? (
           <p className="text-center text-gray-400 py-20">
             {activeTab === 'watchlist' ? '暂无收藏剧集，快去添加吧！' : '暂无数据'}
