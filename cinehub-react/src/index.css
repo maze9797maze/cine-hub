@@ -1,0 +1,11 @@
+/* ===== Tailwind 三行「地基」：把 Tailwind 的样式注入进来 ===== */
+@tailwind base;        /* 第一层：重置浏览器默认样式，让各浏览器表现一致 */
+@tailwind components;  /* 第二层：组件层（可复用的组合样式） */
+@tailwind utilities;   /* 第三层：工具类层，bg-darkBg、text-primaryRed 这些都属于这层 */
+
+/* ===== 全局基础样式 ===== */
+body {
+  background-color: #141414;  /* 页面深色背景（Netflix 暗黑风） */
+  color: #ffffff;             /* 默认白色文字 */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
