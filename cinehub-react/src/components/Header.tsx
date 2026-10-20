@@ -1,12 +1,8 @@
 // Header 组件：顶部导航栏（品牌 Logo + 搜索框 + Tab 切换）
-// 引入同目录下的 SearchBar 组件
 import SearchBar from './SearchBar';
+import type { HeaderProps } from '../types';
 
-// 这个组件接收 5 个 props（从父组件 App 传进来）：
-//   - activeTab / setActiveTab    ：当前 Tab 状态 + 修改函数
-//   - searchQuery / setSearchQuery：搜索文字状态 + 修改函数
-//   - onSearch                    ：点搜索时执行的动作
-export default function Header({ activeTab, setActiveTab, searchQuery, setSearchQuery, onSearch }) {
+export default function Header({ activeTab, setActiveTab, searchQuery, setSearchQuery, onSearch }: HeaderProps) {
   return (
     <header className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 pb-6 border-b border-gray-800">
       {/* 品牌 Logo */}
@@ -15,7 +11,7 @@ export default function Header({ activeTab, setActiveTab, searchQuery, setSearch
         <span className="text-xs bg-red-950 text-red-400 px-2 py-0.5 rounded border border-red-800 font-mono">v2.0 React</span>
       </div>
 
-      {/* 搜索框组件：把三个 props 继续往下传给 SearchBar */}
+      {/* 搜索框组件 */}
       <SearchBar
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}

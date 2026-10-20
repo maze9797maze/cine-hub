@@ -1,37 +1,26 @@
 // MovieModal 组件：点击卡片后弹出的「剧集详情」模态框
 // 用 Framer Motion 做进场 / 出场动画（淡入淡出 + 缩放弹入）
-//
-// 接收 5 个 props：
-//   - movie           ：要展示的电影数据对象（可为 null）
-//   - isOpen          ：是否显示模态框（true/false）
-//   - onClose         ：关闭模态框的函数
-//   - isWatchlisted   ：这部电影是否已在追剧清单里
-//   - onToggleWatchlist：点收藏按钮时执行的函数
-
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import type { MovieModalProps } from '../types';
 
-export default function MovieModal({ movie, isOpen, onClose, isWatchlisted, onToggleWatchlist }) {
-  // 按 Esc 键关闭模态框
-  // useEffect 里返回一个「清理函数」，组件卸载 / isOpen 变化时会先执行它，
-  // 用来移除事件监听，避免内存泄漏
+export default function MovieModal({ movie, isOpen, onClose, isWatchlisted, onToggleWatchlist }: MovieModalProps) {
+  // 按 Esc 键关闭模态框（keydown 事件里的 e 是浏览器的 DOM KeyboardEvent）
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
-  // 拼背景大图地址：backdrop_path 是横版背景图（和海报不同）
-  // 用「可选链」?. ：movie 为 null 时不会报错，直接得到 undefined
+  // 拼背景大图地址（movie 可能为 null，用可选链 ?. 安全访问）
   const backdropUrl = movie?.backdrop_path
     ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
     : null;
 
   return (
     // AnimatePresence：负责「组件从页面移除时」也能播放退场动画
-    // 条件写在它「里面」，这样关闭时 movie/isOpen 变化，退场动画才能正常跑
     <AnimatePresence>
       {isOpen && movie && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -52,7 +41,7 @@ export default function MovieModal({ movie, isOpen, onClose, isWatchlisted, onTo
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           >
-            {/* 顶部横版背景图（有就显示，没有就不显示） */}
+            {/* 顶部横版背景图 */}
             {backdropUrl && (
               <div className="relative h-56 md:h-72">
                 <img
@@ -60,7 +49,6 @@ export default function MovieModal({ movie, isOpen, onClose, isWatchlisted, onTo
                   alt={movie.title || movie.name}
                   className="w-full h-full object-cover"
                 />
-                {/* 背景图下方加一层渐变色，让文字更好读 */}
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent" />
               </div>
             )}
@@ -71,7 +59,6 @@ export default function MovieModal({ movie, isOpen, onClose, isWatchlisted, onTo
                 <h2 className="text-2xl font-bold text-white">
                   {movie.title || movie.name}
                 </h2>
-                {/* 右上角关闭按钮（×） */}
                 <button
                   onClick={onClose}
                   className="shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
@@ -94,7 +81,7 @@ export default function MovieModal({ movie, isOpen, onClose, isWatchlisted, onTo
                 )}
               </div>
 
-              {/* 剧情简介：太长就限制行数 */}
+              {/* 剧情简介 */}
               <p className="mt-4 text-sm text-gray-300 leading-relaxed line-clamp-4">
                 {movie.overview || '暂无简介'}
               </p>

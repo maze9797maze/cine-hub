@@ -1,29 +1,20 @@
 // MovieCard 组件：单个电影/剧集的卡片（海报 + 评分 + 标题 + 收藏按钮）
-//
-// 接收 4 个 props：
-//   - movie           ：电影数据对象（来自 TMDB API）
-//   - isWatchlisted   ：这部电影是否已在追剧清单里（true/false）
-//   - onToggleWatchlist：点收藏按钮时执行的函数
-//   - onOpen          ：点击卡片时执行的函数（打开详情弹窗）
+import type { MovieCardProps } from '../types';
 
-export default function MovieCard({ movie, isWatchlisted, onToggleWatchlist, onOpen }) {
-  // 拼海报图片地址：
-  // TMDB 返回的 poster_path 只是相对路径（如 "/abc.jpg"），
-  // 要拼上前缀才是完整地址。没有海报时用占位图兜底。
+export default function MovieCard({ movie, isWatchlisted, onToggleWatchlist, onOpen }: MovieCardProps) {
+  // 拼海报图片地址：没有海报时用占位图兜底
   const posterUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : 'https://via.placeholder.com/500x750?text=No+Poster';
 
   return (
     // 整张卡片可点击：onClick={onOpen} 打开详情弹窗
-    // cursor-pointer：鼠标移上去变成「小手」，提示可以点
     <div
       onClick={onOpen}
       className="group relative bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-gray-700 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col cursor-pointer"
     >
-      {/* 海报图片容器（aspect-[2/3] 是宽高比 2:3，海报标准比例） */}
+      {/* 海报图片容器 */}
       <div className="relative aspect-[2/3] overflow-hidden bg-gray-800">
-        {/* alt：电影用 title，电视剧用 name；loading="lazy" 表示懒加载省流量 */}
         <img
           src={posterUrl}
           alt={movie.title || movie.name}
@@ -31,7 +22,7 @@ export default function MovieCard({ movie, isWatchlisted, onToggleWatchlist, onO
           loading="lazy"
         />
 
-        {/* 评分 Badge：有评分显示一位小数，没有显示 N/A */}
+        {/* 评分 Badge */}
         <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-md px-2 py-1 rounded-md text-xs font-bold text-yellow-400 flex items-center gap-1 border border-white/10">
           ⭐ {movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}
         </div>
@@ -48,9 +39,7 @@ export default function MovieCard({ movie, isWatchlisted, onToggleWatchlist, onO
           </p>
         </div>
 
-        {/* 收藏按钮：isWatchlisted 决定它的颜色和文字
-            onClick 里先 e.stopPropagation()：阻止事件「冒泡」到外层卡片，
-            否则点收藏按钮会同时触发卡片 onClick（把弹窗也打开） */}
+        {/* 收藏按钮：e.stopPropagation() 阻止冒泡，避免误触打开弹窗 */}
         <button
           onClick={(e) => {
             e.stopPropagation();
