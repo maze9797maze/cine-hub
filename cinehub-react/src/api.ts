@@ -1,8 +1,9 @@
 // api.ts：TMDB API 的配置和请求函数
 import type { Movie } from './types';
 
-// 你的 TMDB API Key
-const API_KEY = '24ccf1daac7e2a5635ab6cce5ff06878';
+// API Key 从环境变量读取（定义在 .env 文件里，不写死在代码中）
+// import.meta.env 是 Vite 提供的「环境变量」对象，只有 VITE_ 开头的变量能读到
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 // TMDB API 的基础地址
 const BASE_URL = 'https://api.themoviedb.org/3';
